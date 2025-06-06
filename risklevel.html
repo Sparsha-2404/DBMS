@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Risk Levels Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body { padding: 20px; }
+    input[type="number"] { width: 100px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Risk Levels Management</h1>
+
+    <!-- Add new Risk Level -->
+    <h3>Add New Risk Level</h3>
+    <form id="addRiskForm" class="mb-4">
+      <input type="number" id="account_id" placeholder="Account ID" required min="1" />
+      <input type="number" id="device_at_risk" placeholder="Device ID" required min="1" />
+      <input type="number" step="0.01" id="risk_score" placeholder="Risk Score" required min="0" max="100" />
+      <input type="date" id="last_assessment_date" required />
+      <button type="submit" class="btn btn-primary">Add Risk Level</button>
+    </form>
+
+    <!-- Risk Levels Table -->
+    <h3>Existing Risk Levels</h3>
+    <table class="table table-bordered" id="riskTable">
+      <thead>
+        <tr>
+          <th>Account ID</th>
+          <th>Device ID</th>
+          <th>Risk Score</th>
+          <th>Last Assessment Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const apiUrl = 'http://localhost:3000/api/risklevels';
+
+    // Load all risk levels
+    async function loadRiskLevels() {
+      const res = await fetch(apiUrl);
+      const riskLevels = await res.json();
+
+      const tbody = document.querySelector('#riskTable tbody');
+      tbody.innerHTML = '';
+
+      riskLevels.forEach(risk => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${risk.account_id}</td>
+          <td>${risk.device_at_risk}</td>
+          <td><input type="number" step="0.01" min="0" max="100" class="risk_score_input" data-account="${risk.account_id}" data-device="${risk.device_at_risk}" value="${risk.risk_score}" /></td>
+          <td><input type="date" class="assessment_date_input" data-account="${risk.account_id}" data-device="${risk.device_at_risk}" value="${new Date(risk.last_assessment_date).toISOString().slice(0,10)}" /></td>
+          <td><button class="btn btn-sm btn-success updateBtn" data-account="${risk.account_id}" data-device="${risk.device_at_risk}">Update</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      addUpdateListeners();
+    }
+
+    // Add listeners for update buttons
+    function addUpdateListeners() {
+      document.querySelectorAll('.updateBtn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const account_id = btn.getAttribute('data-account');
+          const device_at_risk = btn.getAttribute('data-device');
+
+          const riskInput = document.querySelector(`input.risk_score_input[data-account="${account_id}"][data-device="${device_at_risk}"]`);
+          const dateInput = document.querySelector(`input.assessment_date_input[data-account="${account_id}"][data-device="${device_at_risk}"]`);
+
+          const updateData = {
+            risk_score: parseFloat(riskInput.value),
+            last_assessment_date: dateInput.value
+          };
+
+          try {
+            const res = await fetch(`${apiUrl}/${account_id}/${device_at_risk}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(updateData)
+            });
+
+            if (res.ok) {
+              alert('Risk level updated successfully');
+              loadRiskLevels();
+            } else {
+              alert('Failed to update risk level');
+            }
+          } catch (err) {
+            alert('Error updating risk level: ' + err.message);
+          }
+        });
+      });
+    }
+
+    // Handle add new risk level form submit
+    document.getElementById('addRiskForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const newRisk = {
+        account_id: Number(document.getElementById('account_id').value),
+        device_at_risk: Number(document.getElementById('device_at_risk').value),
+        risk_score: parseFloat(document.getElementById('risk_score').value),
+        last_assessment_date: document.getElementById('last_assessment_date').value
+      };
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newRisk)
+        });
+
+        if (res.ok) {
+          alert('Risk level added successfully');
+          e.target.reset();
+          loadRiskLevels();
+        } else {
+          alert('Failed to add risk level');
+        }
+      } catch (err) {
+        alert('Error adding risk level: ' + err.message);
+      }
+    });
+
+    // Initial load
+    loadRiskLevels();
+  </script>
+</body>
+</html>

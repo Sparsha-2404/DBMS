@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fraud Detection Management System</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <!-- AOS CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+   .hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("fraud.jpg")
+      no-repeat center center/cover;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 8%;
+  color: #00ffd1;
+  text-align: left;
+  overflow: hidden;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 0;
+  animation: slideInLeft 1s ease-out forwards;
+}
+
+.hero p {
+  font-size: 1.75rem;
+  margin-top: 1rem;
+  opacity: 0;
+  animation: fadeIn 2s ease-out forwards;
+  animation-delay: 0.8s;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+    h1, h2 {
+      font-weight: 700;
+    }
+    .section-container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem 1rem;
+    }
+    .table-card {
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      transition: background-color 0.3s ease;
+      color: #ccc;
+      user-select: none;
+    }
+    .table-card:hover {
+      background-color: #2a2a2a;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 255, 209, 0.4);
+    }
+    .features-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 255, 209, 0.4);
+    }
+    .table-description {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      min-height: 3rem;
+    }
+    .btn-custom {
+      background-color: #00ffd1;
+      border: none;
+      color: #121212;
+      font-weight: 600;
+    }
+    .btn-custom:hover {
+      background-color: #00bfa5;
+      color: white;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    
+  
+.auth-form {
+  transition: all 0.5s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.auth-form.active {
+  opacity: 1;
+  transform: translateY(0);
+  height: auto;
+  pointer-events: auto;
+}
+
+    .toggle-link {
+      cursor: pointer;
+      text-decoration: underline;
+      color: #00ffd1;
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+    }
+   #about .col-md-6 img {
+  width: 30%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+
+  </style>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#navbarNav" data-bs-offset="100" tabindex="0">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: #121212; border-bottom: 1px solid #00ffd1;">
+    <div class="container">
+      <a class="navbar-brand" href="#" style="color: #00ffd1; font-weight: 700;">Fraud Shield</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#top">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#auth">Login/Register</a>
+          </li><li class="nav-item">
+            <a class="nav-link" href="#tables">Tables</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+<section class="hero" id="top">
+  <div>
+    <h1>Fraud Shield</h1>
+    <p>Fraud Detection Management System</p>
+  </div>
+</section>
+
+  <!-- About Us -->
+<section class="container py-5" id="about">
+  <div class="row align-items-center">
+    <div class="col-md-6 mb-4 mb-md-0" data-aos="fade-right">
+      <img src="hacker.jpg" 
+           alt="About Fraud Shield" 
+           class="img-fluid rounded shadow w-100" />
+    </div>
+    <div class="col-md-6 text-light" data-aos="fade-left">
+      <h2>About Us</h2>
+      <p style="font-size: 1.1rem;">
+        At Fraud Shield, we are dedicated to revolutionizing the way financial fraud is detected and prevented. With online transactions rising rapidly, the risk of identity theft, unauthorized access, and suspicious activities has grown significantly. Traditional fraud detection methods often fall short — slow, outdated, and reactive. That's why we’ve developed a dynamic web-based fraud detection system that empowers financial institutions to monitor, detect, and respond to fraudulent activities in real time. By integrating a structured database, behavioral analysis, geolocation tracking, and device monitoring, our system ensures users can carry out safe transactions while administrators stay informed and alert. We believe in building a secure, transparent, and trustworthy digital financial environment, where both customers and institutions are protected from modern fraud threats.
+      </p>
+
+      <p style="font-size: 1.1rem;">
+        Our mission is to create a safer financial world using smart tech, trusted data, and intuitive user experience.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Features -->
+  <section class="container py-5" id="features">
+    <h2>Features</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+      <div class="col">
+        <div class="table-card h-100 d-flex flex-column align-items-center justify-content-center">
+          <i class="bi bi-bell-fill fs-1 mb-3" style="color:#00ffd1;"></i>
+          <h5>Real-time Alerts</h5>
+        </div>
+      </div>
+      <div class="col">
+        <div class="table-card h-100 d-flex flex-column align-items-center justify-content-center">
+          <i class="bi bi-speedometer2 fs-1 mb-3" style="color:#00ffd1;"></i>
+          <h5>Risk Scoring</h5>
+        </div>
+      </div>
+      <div class="col">
+        <div class="table-card h-100 d-flex flex-column align-items-center justify-content-center">
+          <i class="bi bi-people-fill fs-1 mb-3" style="color:#00ffd1;"></i>
+          <h5>User Behavior Analytics</h5>
+        </div>
+      </div>
+      <div class="col">
+        <div class="table-card h-100 d-flex flex-column align-items-center justify-content-center">
+          <i class="bi bi-robot fs-1 mb-3" style="color:#00ffd1;"></i>
+          <h5>Smart Detection</h5>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Auth Forms -->
+<section class="container py-5" id="auth">
+  <h2 class="text-center mb-4" id="formTitle">Login</h2>
+
+  <!-- Login Form -->
+  <form id="loginForm" onsubmit="event.preventDefault(); login();" class="auth-form active">
+    <div class="mb-3">
+      <label for="loginUser" class="form-label">Username</label>
+      <input type="text" class="form-control bg-dark text-light" id="loginUser" placeholder="Enter your username" required>
+    </div>
+    <div class="mb-3">
+      <label for="loginPass" class="form-label">Password</label>
+      <input type="password" class="form-control bg-dark text-light" id="loginPass" placeholder="Enter your password" required>
+    </div>
+    <button type="submit" class="btn btn-custom w-100">Login</button>
+    <p class="toggle-link" onclick="toggleForms()">Don't have an account? Register here</p>
+  </form>
+
+  <!-- Register Form -->
+  <form id="registerForm" onsubmit="event.preventDefault(); register();" class="auth-form">
+    <div class="mb-3">
+      <label for="regFirst" class="form-label">First Name</label>
+      <input type="text" class="form-control bg-dark text-light" id="regFirst" placeholder="Enter your first name" required>
+    </div>
+    <div class="mb-3">
+      <label for="regLast" class="form-label">Last Name</label>
+      <input type="text" class="form-control bg-dark text-light" id="regLast" placeholder="Enter your last name" required>
+    </div>
+    <div class="mb-3">
+      <label for="regEmail" class="form-label">Email</label>
+      <input type="email" class="form-control bg-dark text-light" id="regEmail" placeholder="Enter your email" required>
+    </div>
+    <div class="mb-3">
+      <label for="regUser" class="form-label">Username</label>
+      <input type="text" class="form-control bg-dark text-light" id="regUser" placeholder="Choose a username" required>
+    </div>
+    <div class="mb-3">
+      <label for="regPass" class="form-label">Password</label>
+      <input type="password" class="form-control bg-dark text-light" id="regPass" placeholder="Create a password" required>
+    </div>
+    <div class="mb-3">
+      <label for="regConfirm" class="form-label">Confirm Password</label>
+      <input type="password" class="form-control bg-dark text-light" id="regConfirm" placeholder="Confirm your password" required>
+    </div>
+    <div class="mb-3">
+      <label for="regRole" class="form-label">Role</label>
+      <select class="form-select bg-dark text-light" id="regRole" required>
+        <option value="" disabled selected>Select Role</option>
+        <option>Fraud Analyst</option>
+        <option>Reviewer</option>
+        <option>Supervisor</option>
+        <option>Manager</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-warning w-100">Register</button>
+    <p class="toggle-link" onclick="toggleForms()">Already have an account? Login here</p>
+  </form>
+</section>
+
+
+  <!-- Services Section -->
+  <section class="section-container" id="tables">
+    <h2>Tables</h2>
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4" id="tablesContainer"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center py-4" style="border-top:1px solid #333;">
+    &copy; 2025 Fraud Shield. All rights reserved.
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Main JS -->
+  <script>
+    const tables = [
+      { name: "Customers", desc: "Details of customers and profiles.",file: "customers.html" },
+      { name: "Accounts", desc: "Information on bank accounts and status.",file: "accounts.html" },
+      { name: "Devices", desc: "Registered devices for transactions.",file:"devices.html" },
+      { name: "Banks", desc: "List of partner banks integrated.",file:"banks.html" },
+      { name: "Risk Levels", desc: "Categorization of risk severity.",file:"risklevel.html" },
+      { name: "Reports", desc: "Generated reports and analytics.",file:"reports.html" },
+    ];
+
+    const tablesContainer = document.getElementById("tablesContainer");
+
+    tables.forEach(({ name, desc ,file}, i) => {
+  const card = document.createElement("div");
+  card.className = "col";
+  card.innerHTML = `
+    <div class="card table-card h-100 d-flex flex-column justify-content-between">
+      <div>
+        <h5>${name}</h5>
+        <p class="table-description">${desc}</p>
+      </div>
+      <a href="${file}" class="btn btn-custom mt-3">View Data</a>
+    </div>`;
+  tablesContainer.appendChild(card);
+});
+
+
+   function toggleForms() {
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const formTitle = document.getElementById("formTitle");
+
+  loginForm.classList.toggle("active");
+  registerForm.classList.toggle("active");
+
+  formTitle.textContent = loginForm.classList.contains("active") ? "Login" : "Register";
+}
+
+
+
+        function handleLogin() {
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value.trim();
+      const errorDiv = document.getElementById("login-error-message");
+      
+      if (!username || !password) {
+        errorDiv.textContent = "Please enter both username and password.";
+        return;
+      }
+      
+      errorDiv.textContent = "";
+      alert(`Successfully logged in as ${username}!`);
+      // You can add redirect logic here or call your backend API
+    }
+
+    // New register function for dedicated register page
+    function handleRegister() {
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const role = document.getElementById("role").value;
+      const errorDiv = document.getElementById("register-error-message");
+
+      // Validation
+      if (!firstName || !lastName || !email || !username || !password || !confirmPassword || !role) {
+        errorDiv.textContent = "Please fill out all fields.";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        errorDiv.textContent = "Passwords do not match.";
+        return;
+      }
+
+      if (password.length < 6) {
+        errorDiv.textContent = "Password must be at least 6 characters long.";
+        return;
+      }
+
+      errorDiv.textContent = "";
+      alert(`Registration successful! Welcome ${firstName} ${lastName}!`);
+      
+      // Clear form
+      document.getElementById("firstName").value = "";
+      document.getElementById("lastName").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("confirmPassword").value = "";
+      document.getElementById("role").value = "";
+      
+      // Redirect to login page
+      showPage('loginPage');
+    }
+  </script>
+  <!-- AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1000,
+    once: true
+  });
+</script>
+
+</body>
+</html>

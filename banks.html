@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Banks Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body { padding: 20px; }
+    .form-inline > * { margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Banks Management</h1>
+
+    <!-- Add new bank form -->
+    <h3>Add New Bank</h3>
+    <form id="addBankForm" class="mb-4">
+      <input type="text" id="bank_name" placeholder="Bank Name" required />
+      <input type="text" id="bank_code" placeholder="Bank Code" required />
+      <input type="text" id="country" placeholder="Country" required />
+      <input type="text" id="swift_code" placeholder="SWIFT Code" required />
+      <input type="text" id="routing_number" placeholder="Routing Number" required />
+      <select id="risk_rating" required>
+        <option value="">Risk Rating</option>
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+      </select>
+      <input type="number" id="fraud_incidents" placeholder="Fraud Incidents" min="0" required />
+      <input type="number" id="total_transactions" placeholder="Total Transactions" min="0" required />
+      <input type="number" step="0.01" id="success_rate" placeholder="Success Rate (%)" min="0" max="100" required />
+      <select id="connection_status" required>
+        <option value="">Connection Status</option>
+        <option>Active</option>
+        <option>Inactive</option>
+        <option>Suspended</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Add Bank</button>
+    </form>
+
+    <!-- Banks Table -->
+    <h3>Existing Banks</h3>
+    <table class="table table-bordered" id="banksTable">
+      <thead>
+        <tr>
+          <th>Bank Name</th>
+          <th>Bank Code</th>
+          <th>Country</th>
+          <th>SWIFT Code</th>
+          <th>Routing Number</th>
+          <th>Risk Rating</th>
+          <th>Fraud Incidents</th>
+          <th>Total Transactions</th>
+          <th>Success Rate (%)</th>
+          <th>Connection Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const apiUrl = 'http://localhost:3000/api/banks';
+
+    // Fetch and display all banks
+    async function loadBanks() {
+      const res = await fetch(apiUrl);
+      const banks = await res.json();
+      const tbody = document.querySelector('#banksTable tbody');
+      tbody.innerHTML = '';
+      banks.forEach(bank => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${bank.bank_name}</td>
+          <td>${bank.bank_code}</td>
+          <td>${bank.country}</td>
+          <td>${bank.swift_code}</td>
+          <td>${bank.routing_number}</td>
+          <td>
+            <select class="risk_rating_select" data-id="${bank.bank_id}">
+              <option value="Low" ${bank.risk_rating === 'Low' ? 'selected' : ''}>Low</option>
+              <option value="Medium" ${bank.risk_rating === 'Medium' ? 'selected' : ''}>Medium</option>
+              <option value="High" ${bank.risk_rating === 'High' ? 'selected' : ''}>High</option>
+            </select>
+          </td>
+          <td><input type="number" class="fraud_incidents_input" data-id="${bank.bank_id}" value="${bank.fraud_incidents}" min="0" /></td>
+          <td>${bank.total_transactions}</td>
+          <td>${bank.success_rate}</td>
+          <td>${bank.connection_status}</td>
+          <td><button class="btn btn-sm btn-success updateBtn" data-id="${bank.bank_id}">Update</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      addUpdateListeners();
+    }
+
+    // Add event listeners for update buttons
+    function addUpdateListeners() {
+      document.querySelectorAll('.updateBtn').forEach(button => {
+        button.addEventListener('click', async () => {
+          const id = button.getAttribute('data-id');
+          const riskSelect = document.querySelector(`select.risk_rating_select[data-id="${id}"]`);
+          const fraudInput = document.querySelector(`input.fraud_incidents_input[data-id="${id}"]`);
+
+          const updateData = {
+            risk_rating: riskSelect.value,
+            fraud_incidents: Number(fraudInput.value),
+            updated_at: new Date().toISOString()
+          };
+
+          try {
+            const res = await fetch(`${apiUrl}/${id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(updateData)
+            });
+
+            if (res.ok) {
+              alert('Bank updated successfully');
+              loadBanks();
+            } else {
+              alert('Failed to update bank');
+            }
+          } catch (err) {
+            alert('Error updating bank: ' + err.message);
+          }
+        });
+      });
+    }
+
+    // Handle Add Bank form submit
+    document.getElementById('addBankForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const newBank = {
+        bank_name: document.getElementById('bank_name').value,
+        bank_code: document.getElementById('bank_code').value,
+        country: document.getElementById('country').value,
+        swift_code: document.getElementById('swift_code').value,
+        routing_number: document.getElementById('routing_number').value,
+        risk_rating: document.getElementById('risk_rating').value,
+        fraud_incidents: Number(document.getElementById('fraud_incidents').value),
+        total_transactions: Number(document.getElementById('total_transactions').value),
+        success_rate: parseFloat(document.getElementById('success_rate').value),
+        connection_status: document.getElementById('connection_status').value,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBank)
+        });
+
+        if (res.ok) {
+          alert('Bank added successfully');
+          e.target.reset();
+          loadBanks();
+        } else {
+          alert('Failed to add bank');
+        }
+      } catch (err) {
+        alert('Error adding bank: ' + err.message);
+      }
+    });
+
+    // Initial load
+    loadBanks();
+  </script>
+</body>
+</html>

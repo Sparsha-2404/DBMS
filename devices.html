@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Devices</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    button { margin-top: 10px; padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Devices</h1>
+
+  <button onclick="registerDevice()">Register This Device</button>
+
+  <table id="deviceTable">
+    <thead>
+      <tr>
+        <th>Device ID</th>
+        <th>Customer ID</th>
+        <th>IP Address</th>
+        <th>Device Type</th>
+        <th>OS</th>
+        <th>First Used</th>
+        <th>Last Used</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function fetchDevices() {
+      const res = await fetch('http://localhost:3000/api/devices');
+      const devices = await res.json();
+      const tbody = document.querySelector("#deviceTable tbody");
+      tbody.innerHTML = '';
+
+      devices.forEach(device => {
+        const row = `
+          <tr>
+            <td>${device.device_id}</td>
+            <td>${device.customer_id}</td>
+            <td>${device.ip_address}</td>
+            <td>${device.device_type}</td>
+            <td>${device.device_os}</td>
+            <td>${new Date(device.first_used).toLocaleString()}</td>
+            <td>${new Date(device.last_used).toLocaleString()}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function getDeviceType() {
+      const ua = navigator.userAgent;
+      if (/mobile/i.test(ua)) return "Mobile";
+      if (/tablet/i.test(ua)) return "Tablet";
+      return "Desktop";
+    }
+
+    function getOS() {
+      const platform = navigator.platform.toLowerCase();
+      const userAgent = navigator.userAgent.toLowerCase();
+
+      if (platform.includes("win")) return "Windows";
+      if (platform.includes("mac")) return "macOS";
+      if (platform.includes("linux")) return "Linux";
+      if (/android/.test(userAgent)) return "Android";
+      if (/iphone|ipad/.test(userAgent)) return "iOS";
+      return "Unknown";
+    }
+
+    async function getPublicIP() {
+      const res = await fetch('https://api64.ipify.org?format=json');
+      const data = await res.json();
+      return data.ip;
+    }
+
+    async function registerDevice() {
+      const customer_id = prompt("Enter your Customer ID:");
+      if (!customer_id) return alert("Customer ID is required!");
+
+      const ip = await getPublicIP();
+      const os = getOS();
+      const type = getDeviceType();
+
+      const payload = {
+        customer_id: Number(customer_id),
+        ip_address: ip,
+        device_type: type,
+        device_os: os
+      };
+
+      const res = await fetch('http://localhost:3000/api/devices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        alert('Device registered successfully!');
+        fetchDevices();
+      } else {
+        alert('Error: ' + (result.error || result.message));
+      }
+    }
+
+    fetchDevices();
+  </script>
+</body>
+</html>
